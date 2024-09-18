@@ -1,0 +1,63 @@
+function [Best_score,Best_pos,Cong_Curve]=TGO(SearchAgents_no,Max_IT,lb,ub,dim,fobj,Function_name)
+Best_pos=zeros(1,dim);
+Best_score=inf;                      
+M_T=inf;
+Cong_Curve=zeros(1,Max_IT);
+X=initialization(SearchAgents_no,dim,ub,lb);
+Distance_Goose=zeros(SearchAgents_no,dim);
+loop=0;                                            
+while loop<Max_IT
+    for i=1:size(X,1)  
+        Flag4ub=X(i,:)>ub;
+        Flag4lb=X(i,:)<lb;
+        X(i,:)=(X(i,:).*(~(Flag4ub+Flag4lb)))+ub.*Flag4ub+lb.*Flag4lb;               
+        fitness=fobj(X(i,:)',Function_name);
+            if fitness<Best_score 
+               Best_score=fitness;           
+               Best_pos=X(i,:);                           
+            end
+            end     
+    for i=1:size(X,1)        
+        pro=rand;
+      rnd=rand;
+       coe=rand();
+       if(coe<=0.17)
+           coe;
+       else
+           coe=0.17;
+       end
+      S_W(i,:)=randi([5,25],1,1);                                       
+      T_o_A_O(i,:)=rand(1,dim);                                           
+      T_o_A_S(i,:)=rand(1,dim);                                               
+      T_T=sum(T_o_A_S(i,:))/dim;                                      
+      T_A=T_T/2;                                                       
+      if rnd>=0.5           
+          if pro>0.2              
+                  if S_W>=12
+                        F_F_S=T_o_A_O(i,:) *(sqrt(S_W(i,:))/ 9.81);        
+                        S_S=343.2;
+                        D_S_T(i,:)=S_S* T_o_A_S(i,:);                    
+                        D_G(i,:)=0.5* D_S_T(i,:);                        
+                      X(i,:)=F_F_S + D_G(i,:)* T_A^2;                                         
+                    elseif S_W<12
+             elseif pro<=0.2 
+                        F_F_S=T_o_A_O(i,:) *(S_W(i,:)/ 9.81);             
+                        S_S=343.2;
+                        D_S_T(i,:)=S_S* T_o_A_S(i,:);                  
+                        D_G(i,:)=0.5* D_S_T(i,:);                     
+                      X(i,:)=F_F_S.*D_G(i,:)* T_A^2*coe;                                               
+                     end
+              end
+                     else
+                        if M_T>T_T
+                          M_T=T_T;
+                        end
+                     alpha=2-(loop/(Max_IT/2));                        
+                     X(i,:)=normrnd(0,1,[1,dim]).*(M_T*alpha)+Best_pos;                              
+        end 
+    end
+    loop=loop+1;
+    Cong_Curve(loop)=Best_score;
+end
+  
+    
